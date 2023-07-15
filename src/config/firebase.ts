@@ -1,19 +1,50 @@
+// import { initializeApp } from 'firebase/app';
+// import 'firebase/firestore';
+// import { getFirestore } from 'firebase/firestore/lite';
+// import { getSsmParameter } from '../util/ssmParameter';
+
+
+// const firebaseConfig = {
+//     apiKey: getSsmParameter("firbaseApiKey") ,
+//     authDomain: getSsmParameter("firebaseAuthDomain"),
+//     projectId: getSsmParameter("firebaseProjectId"),
+//     storageBucket: getSsmParameter("firebaseStorageBucket"),
+//     messagingSenderId: getSsmParameter("firebaseSenderId"),
+//     appId: getSsmParameter("firebaseAppId")
+
+// };
+
+// const app = initializeApp(firebaseConfig);
+// const db = getFirestore(app);
+
+// export default db;
+
 import { initializeApp } from 'firebase/app';
 import 'firebase/firestore';
-import { getFirestore } from 'firebase/firestore/lite';
+import { getFirestore, Firestore } from 'firebase/firestore/lite';
+import { getSsmParameter } from '../util/ssmParameter';
 
+const initializeFirebase = async (): Promise<Firestore> => {
+  const apiKey = await getSsmParameter('firbaseApiKey');
+  const authDomain = await getSsmParameter('firebaseAuthDomain');
+  const projectId = await getSsmParameter('firebaseProjectId');
+  const storageBucket = await getSsmParameter('firebaseStorageBucket');
+  const messagingSenderId = await getSsmParameter('firebaseSenderId');
+  const appId = await getSsmParameter('firebaseAppId');
 
-const firebaseConfig = {
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID
+  const firebaseConfig = {
+    apiKey,
+    authDomain,
+    projectId,
+    storageBucket,
+    messagingSenderId,
+    appId,
+  };
 
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  return db;
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-export default db;
+export default initializeFirebase;
